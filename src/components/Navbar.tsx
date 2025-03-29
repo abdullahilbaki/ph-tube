@@ -1,10 +1,10 @@
-import phTubeLogo from "./assets/Logo.svg";
+import phTubeLogo from "../assets/Logo.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   return (
-    <div className="container mx-auto p-4 flex items-center">
+    <div className="container mx-auto px-4 sm:px-0 py-6 flex items-center border-b-2 border-gray-200">
       {/* logo and header */}
 
       <a href="/" className="flex items-center gap-2">
