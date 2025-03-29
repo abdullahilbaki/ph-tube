@@ -1,54 +1,83 @@
-# React + TypeScript + Vite
+<p align="center">
+<img src="./src/assets/Logo.png"  />
+</p>
+<p align="center" style="font-size: 24px;">
+  PH Tube is a web-based video streaming application where users can browse and watch videos sorted by categories such as music, comedy, and tutorials.
+</p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<hr/>
+<p align="center" style="font-size: 34px; font-weight:bold">
+ REST API
+</p>
 
-Currently, two official plugins are available:
+<p style=" font-weight:bold">
+ GET: Categories 
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Endpoint: [https://openapi.programming-hero.com/api/phero-tube/categories](https://openapi.programming-hero.com/api/phero-tube/categories) <br/>
 
-## Expanding the ESLint configuration
+<hr/>
+<p style=" font-weight:bold">
+ GET: Videos 
+</p>
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Endpoint: [https://openapi.programming-hero.com/api/phero-tube/videos](https://openapi.programming-hero.com/api/phero-tube/videos) <br/>
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+<hr/>
+<p style=" font-weight:bold">
+ GET: Video based on Catagory  [ params ]
+</p>
+Endpoint : https://openapi.programming-hero.com/api/phero-tube/category/categoryId
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Example: [https://openapi.programming-hero.com/api/phero-tube/category/1001](https://openapi.programming-hero.com/api/phero-tube/category/1001) <br/>
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+<hr/>
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+<p style=" font-weight:bold">
+ GET: Video based on Title  [ Query ]
+</p>
+Endpoint : https://openapi.programming-hero.com/api/phero-tube/videos?title=videoTitle
+
+Example: [https://openapi.programming-hero.com/api/phero-tube/videos?title=shape](https://openapi.programming-hero.com/api/phero-tube/videos?title=shape) <br/>
+
+<hr/>
+<p style=" font-weight:bold">
+ GET: Video Details by video_id  [ Query ]
+</p>
+Endpoint : https://openapi.programming-hero.com/api/phero-tube/video/video_id
+
+Example: [https://openapi.programming-hero.com/api/phero-tube/video/aaac](https://openapi.programming-hero.com/api/phero-tube/video/aaac) <br/>
+
+<hr/>
+<p align="center" style="font-size: 34px; font-weight:bold">
+ Requirements
+</p>
+
+### Create a responsive Navbar which have following elements
+
+- Logo of PH-Tube at Left
+- A Search Box with Search Button at Center
+- A Sort Button at the Right
+- (Add a border at bottom of the Navbar)
+
+### Create Dynamic Category Section
+
+- Load all the Catagory Button From API and Show them in a centered position
+- on click on a certain button, Load specific Catagory Data
+- Integrate active button functionality for better UX
+
+### Create Dynamic Video Sections
+
+- Load all the videos from API
+- use the Card Layout mentioned in Design part
+- Show Verified badge (if Verified)
+- on click Show Video Details with Author info in a modal
+- Show No Video Icon if specific category have no videos
+
+## Additional Features
+
+### Search Functionality
+
+- Integrate search functionality
+- on input change de-activate active button on category and show matched videos only
+
