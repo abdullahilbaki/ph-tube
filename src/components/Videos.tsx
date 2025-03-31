@@ -23,6 +23,7 @@ interface Videos {
 }
 
 interface ApiResponse {
+  category: Videos[];
   videos: Videos[];
 }
 
@@ -50,7 +51,7 @@ const ShowVideos: React.FC<{ videosPromise: Promise<ApiResponse> }> = ({
   videosPromise,
 }) => {
   const apiResponse: ApiResponse = use(videosPromise);
-  const videos: Videos[] = apiResponse.videos;
+  const videos: Videos[] = apiResponse.category ?? apiResponse.videos;
   return (
     <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center items-start">
       {videos.map((video) => (
