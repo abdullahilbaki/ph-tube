@@ -1,3 +1,5 @@
+// CategoryBtns.tsx
+
 import React, { Suspense, use, useState } from "react";
 import { BeatLoader, PropagateLoader } from "react-spinners";
 
@@ -11,10 +13,11 @@ const Button: React.FC<ButtonProps> = ({ btnText, isClicked, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className={`px-4 p-1 font-medium rounded-sm 
-    hover:bg-gray-200 outline-none transition-all duration-200 ease-in-out
-      transform hover:scale-105 active:scale-95 cursor-pointer 
-      ${isClicked ? `bg-red-500 text-white hover:bg-red-600` : `bg-gray-300`}`}
+      className={`px-4 p-1 font-medium rounded-sm hover:bg-gray-200 
+        outline-none transition-all duration-200 ease-in-out transform 
+        hover:scale-105 active:scale-95 cursor-pointer ${
+          isClicked ? `bg-red-500 text-white hover:bg-red-600` : `bg-gray-300`
+        }`}
     >
       {btnText}
     </button>
@@ -30,8 +33,14 @@ interface ApiResponse {
   categories: Category[];
 }
 
-const ShowCategoryBtns: React.FC<{ buttonPromise: Promise<ApiResponse> }> = ({
+interface ShowCategoryBtnsProps {
+  buttonPromise: Promise<ApiResponse>;
+  onCategoryChange: (categoryId: string | null) => void;
+}
+
+const ShowCategoryBtns: React.FC<ShowCategoryBtnsProps> = ({
   buttonPromise,
+  onCategoryChange,
 }) => {
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const apiResponse: ApiResponse = use(buttonPromise);
@@ -47,6 +56,7 @@ const ShowCategoryBtns: React.FC<{ buttonPromise: Promise<ApiResponse> }> = ({
 
   const handleCategoryClick = (categoryId: string | null) => {
     setActiveCategoryId(categoryId);
+    onCategoryChange(categoryId);
   };
 
   return (
@@ -75,7 +85,9 @@ const buttonPromise: Promise<ApiResponse> = fetch(
   "https://openapi.programming-hero.com/api/phero-tube/categories"
 ).then((res) => res.json());
 
-const GetCategoryBtns: React.FC = () => {
+const GetCategoryBtns: React.FC<{
+  onCategoryChange: (categoryId: string | null) => void;
+}> = ({ onCategoryChange }) => {
   return (
     <Suspense
       fallback={
@@ -84,7 +96,10 @@ const GetCategoryBtns: React.FC = () => {
         </div>
       }
     >
-      <ShowCategoryBtns buttonPromise={buttonPromise} />
+      <ShowCategoryBtns
+        buttonPromise={buttonPromise}
+        onCategoryChange={onCategoryChange}
+      />
     </Suspense>
   );
 };

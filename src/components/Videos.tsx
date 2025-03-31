@@ -1,6 +1,9 @@
-import React, { Suspense, use } from "react";
+// Videos.tsx
+
+import React, { Suspense, use, useState, useEffect } from "react";
 import { RiseLoader } from "react-spinners";
 import verifiedIcon from "../assets/verified.svg";
+import GetCategoryBtns from "./CategoryBtns";
 
 interface Authors {
   profile_picture: string;
@@ -27,13 +30,33 @@ interface ApiResponse {
   videos: Videos[];
 }
 
-const videosPromise: Promise<ApiResponse> = fetch(
-  "https://openapi.programming-hero.com/api/phero-tube/videos"
-).then((res) => res.json());
-
 const Videos: React.FC = () => {
+  const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [videosPromise, setVideosPromise] = useState<Promise<ApiResponse>>(
+    fetch("https://openapi.programming-hero.com/api/phero-tube/videos").then(
+      (res) => res.json()
+    )
+  );
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      const url = categoryId
+        ? `https://openapi.programming-hero.com/api/phero-tube/category/${categoryId}`
+        : "https://openapi.programming-hero.com/api/phero-tube/videos";
+      const promise = fetch(url).then((res) => res.json());
+      setVideosPromise(promise);
+    };
+
+    fetchVideos();
+  }, [categoryId]);
+
+  const handleCategoryChange = (newCategoryId: string | null) => {
+    setCategoryId(newCategoryId);
+  };
+
   return (
     <div className="container mx-auto px-4 sm:px-0 py-6">
+      <GetCategoryBtns onCategoryChange={handleCategoryChange} />
       <Suspense
         fallback={
           <div className="flex justify-center mt-20">
@@ -52,6 +75,7 @@ const ShowVideos: React.FC<{ videosPromise: Promise<ApiResponse> }> = ({
 }) => {
   const apiResponse: ApiResponse = use(videosPromise);
   const videos: Videos[] = apiResponse.category ?? apiResponse.videos;
+
   return (
     <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center items-start">
       {videos.map((video) => (
@@ -71,7 +95,6 @@ const ShowVideos: React.FC<{ videosPromise: Promise<ApiResponse> }> = ({
             )}
             <div className="flex flex-col gap-1">
               <h2 className="font-semibold text-lg">{video.title}</h2>
-
               <div className="flex gap-2 items-center">
                 {video.authors.length > 0 && (
                   <p className="text-gray-500">
