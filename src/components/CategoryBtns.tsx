@@ -1,16 +1,20 @@
-import React, { Suspense, use } from "react";
+import React, { Suspense, use, useState } from "react";
 import { BeatLoader, PropagateLoader } from "react-spinners";
 
 interface ButtonProps {
   btnText: string;
+  isClicked: boolean;
+  onClick: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({ btnText }) => {
+const Button: React.FC<ButtonProps> = ({ btnText, isClicked, onClick }) => {
   return (
     <button
-      className="px-4 p-1 bg-gray-300 font-medium rounded-sm 
+      onClick={onClick}
+      className={`px-4 p-1 font-medium rounded-sm 
     hover:bg-gray-200 outline-none transition-all duration-200 ease-in-out
-      transform hover:scale-105 active:scale-95 cursor-pointer"
+      transform hover:scale-105 active:scale-95 cursor-pointer 
+      ${isClicked ? `bg-red-500 text-white hover:bg-red-600` : `bg-gray-300`}`}
     >
       {btnText}
     </button>
@@ -29,21 +33,39 @@ interface ApiResponse {
 const ShowCategoryBtns: React.FC<{ buttonPromise: Promise<ApiResponse> }> = ({
   buttonPromise,
 }) => {
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const apiResponse: ApiResponse = use(buttonPromise);
   const categoryBtns: Category[] = apiResponse.categories;
 
   if (!categoryBtns) {
-    return <div className="flex justify-center mt-8"><PropagateLoader /></div>;
+    return (
+      <div className="flex justify-center mt-8">
+        <PropagateLoader />
+      </div>
+    );
   }
+
+  const handleCategoryClick = (categoryId: string | null) => {
+    setActiveCategoryId(categoryId);
+  };
 
   return (
     <div
-      className="container mx-auto px-4 sm:px-0 py-6 flex flex-wrap items-center 
-      justify-center gap-3"
+      className="container mx-auto px-4 sm:px-0 py-6 flex flex-wrap 
+      items-center justify-center gap-3"
     >
-      <Button btnText="All" />
+      <Button
+        btnText="All"
+        isClicked={activeCategoryId === null}
+        onClick={() => handleCategoryClick(null)}
+      />
       {categoryBtns.map((category) => (
-        <Button key={category.category_id} btnText={category.category} />
+        <Button
+          key={category.category_id}
+          btnText={category.category}
+          isClicked={activeCategoryId === category.category_id}
+          onClick={() => handleCategoryClick(category.category_id)}
+        />
       ))}
     </div>
   );
@@ -55,7 +77,13 @@ const buttonPromise: Promise<ApiResponse> = fetch(
 
 const GetCategoryBtns: React.FC = () => {
   return (
-    <Suspense fallback={<div className="flex justify-center mt-8"><BeatLoader /></div>}>
+    <Suspense
+      fallback={
+        <div className="flex justify-center mt-8">
+          <BeatLoader />
+        </div>
+      }
+    >
       <ShowCategoryBtns buttonPromise={buttonPromise} />
     </Suspense>
   );
