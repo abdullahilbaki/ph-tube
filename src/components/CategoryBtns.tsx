@@ -1,4 +1,5 @@
 import React, { Suspense, use } from "react";
+import { BeatLoader, PropagateLoader } from "react-spinners";
 
 interface ButtonProps {
   btnText: string;
@@ -22,8 +23,6 @@ interface Category {
 }
 
 interface ApiResponse {
-  status: boolean;
-  message: string;
   categories: Category[];
 }
 
@@ -34,12 +33,12 @@ const ShowCategoryBtns: React.FC<{ buttonPromise: Promise<ApiResponse> }> = ({
   const categoryBtns: Category[] = apiResponse.categories;
 
   if (!categoryBtns) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center mt-8"><PropagateLoader /></div>;
   }
 
   return (
     <div
-      className="container mx-auto px-4 sm:px-0 py-6 flex items-center 
+      className="container mx-auto px-4 sm:px-0 py-6 flex flex-wrap items-center 
       justify-center gap-3"
     >
       <Button btnText="All" />
@@ -56,7 +55,7 @@ const buttonPromise: Promise<ApiResponse> = fetch(
 
 const GetCategoryBtns: React.FC = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="flex justify-center mt-8"><BeatLoader /></div>}>
       <ShowCategoryBtns buttonPromise={buttonPromise} />
     </Suspense>
   );
