@@ -1,7 +1,5 @@
-// Videos.tsx
-
 import React, { Suspense, use, useState, useEffect } from "react";
-import { RiseLoader } from "react-spinners";
+import { MoonLoader } from "react-spinners";
 import verifiedIcon from "../assets/verified.svg";
 import GetCategoryBtns from "./CategoryBtns";
 
@@ -60,7 +58,7 @@ const Videos: React.FC = () => {
       <Suspense
         fallback={
           <div className="flex justify-center mt-20">
-            <RiseLoader />
+            <MoonLoader />
           </div>
         }
       >

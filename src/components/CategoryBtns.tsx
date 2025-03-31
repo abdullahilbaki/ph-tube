@@ -1,5 +1,3 @@
-// CategoryBtns.tsx
-
 import React, { Suspense, use, useState } from "react";
 import { BeatLoader, PropagateLoader } from "react-spinners";
 
