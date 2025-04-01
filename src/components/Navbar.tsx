@@ -66,7 +66,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ className = "", onSearch }) => {
           value={searchQuery}
           onChange={handleInputChange}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               handleSearchClick();
             }
           }}

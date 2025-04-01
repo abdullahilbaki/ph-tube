@@ -67,7 +67,6 @@ const Videos: React.FC = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setCategoryId(null); // Reset category on search
   };
 
   const handleSortByView = () => {
