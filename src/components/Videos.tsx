@@ -2,6 +2,7 @@ import React, { Suspense, use, useState, useEffect } from "react";
 import { MoonLoader } from "react-spinners";
 import verifiedIcon from "../assets/verified.svg";
 import GetCategoryBtns from "./CategoryBtns";
+import Icon from "../assets/Icon.png";
 
 interface Authors {
   profile_picture: string;
@@ -74,8 +75,8 @@ const ShowVideos: React.FC<{ videosPromise: Promise<ApiResponse> }> = ({
   const apiResponse: ApiResponse = use(videosPromise);
   const videos: Videos[] = apiResponse.category ?? apiResponse.videos;
 
-  return (
-    <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center items-start">
+  return videos.length > 0 ? (
+    <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center items-start">
       {videos.map((video) => (
         <div className="flex flex-col gap-3 h-full mb-8" key={video.video_id}>
           <img
@@ -110,6 +111,13 @@ const ShowVideos: React.FC<{ videosPromise: Promise<ApiResponse> }> = ({
           </div>
         </div>
       ))}
+    </div>
+  ) : (
+    <div className="mt-20 flex flex-col gap-8 items-center justify-center">
+      <img src={Icon} alt="No video Icon" />
+      <h2 className="max-w-80 font-bold text-2xl sm:text-3xl text-center">
+        Oops!! Sorry, There is no content here
+      </h2>
     </div>
   );
 };
