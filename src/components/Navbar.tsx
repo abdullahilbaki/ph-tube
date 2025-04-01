@@ -56,12 +56,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ className = "", onSearch }) => {
   return (
     <div className="flex items-center justify-center">
       <div
-        className={`${className} flex border-2 border-gray-300 rounded-full overflow-hidden w-full max-w-full mx-auto`}
+        className={`${className} flex border-2 border-gray-300 rounded-full overflow-hidden  max-w-md `}
       >
         <input
           type="text"
           placeholder="Search..."
-          className="w-full px-4 py-3 text-sm text-gray-700 bg-white outline-none"
+          className="w-[70%] sm:w-auto px-4 py-2 text-sm text-gray-700 bg-white outline-none"
           aria-label="Search input"
           value={searchQuery}
           onChange={handleInputChange}
@@ -73,7 +73,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ className = "", onSearch }) => {
         />
         <button
           type="button"
-          className=" flex items-center justify-center px-5 py-2 bg-black text-white rounded-r-full hover:bg-gray-700 active:bg-gray-600 focus:outline-none cursor-pointer"
+          className="w-1/3 sm:w-auto flex items-center justify-center px-5 py-2 bg-black text-white rounded-r-full hover:bg-gray-700 active:bg-gray-600 focus:outline-none cursor-pointer"
           aria-label="Search button"
           onClick={handleSearchClick}
         >
