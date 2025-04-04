@@ -1,11 +1,11 @@
-// Videos.tsx
-
-import React, { Suspense, use, useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { MoonLoader } from "react-spinners";
 import verifiedIcon from "../assets/verified.svg";
 import GetCategoryBtns from "./CategoryBtns";
 import Icon from "../assets/Icon.png";
 import Navbar from "./Navbar";
+import VideoDetails from "./VideoDetails";
+import NiceModal from "@ebay/nice-modal-react";
 
 interface Author {
   profile_picture: string;
@@ -28,22 +28,21 @@ interface Video {
 }
 
 interface ApiResponse {
-  category: Video[];
+  category?: Video[];
   videos: Video[];
 }
 
 const Videos: React.FC = () => {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [videosPromise, setVideosPromise] = useState<Promise<ApiResponse>>(
-    fetch("https://openapi.programming-hero.com/api/phero-tube/videos").then(
-      (res) => res.json()
-    )
-  );
+  const [videos, setVideos] = useState<Video[]>([]);
   const [sortByView, setSortByView] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchVideos = async () => {
+      setLoading(true);
       let url = "https://openapi.programming-hero.com/api/phero-tube/videos";
       if (categoryId) {
         url = `https://openapi.programming-hero.com/api/phero-tube/category/${categoryId}`;
@@ -52,9 +51,15 @@ const Videos: React.FC = () => {
         const queryParam = `?title=${searchQuery}`;
         url += queryParam;
       }
-      console.log(url);
-      const promise = fetch(url).then((res) => res.json());
-      setVideosPromise(promise);
+      try {
+        const response = await fetch(url);
+        const data: ApiResponse = await response.json();
+        setVideos(data.category ?? data.videos);
+      } catch (error) {
+        console.error("Failed to fetch videos:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchVideos();
@@ -69,13 +74,19 @@ const Videos: React.FC = () => {
   };
 
   const handleSortByView = () => {
-    setSortByView(!sortByView);
+    setSortByView((prev) => !prev);
+  };
+
+  const handleVideoClick = (id: string) => {
+    setSelectedVideo(id);
+    NiceModal.show(VideoDetails, { id: id });
   };
 
   return (
     <div className="container mx-auto px-4 sm:px-0 py-6">
       <Navbar onSearch={handleSearch} onSortByView={handleSortByView} />
       <GetCategoryBtns onCategoryChange={handleCategoryChange} />
+
       <Suspense
         fallback={
           <div className="mt-20 flex justify-center">
@@ -84,44 +95,63 @@ const Videos: React.FC = () => {
         }
       >
         <VideoDisplay
-          videosPromise={videosPromise}
+          videos={videos}
           searchQuery={searchQuery}
           sortByView={sortByView}
+          onVideoClick={handleVideoClick}
+          loading={loading}
         />
+
+        {selectedVideo && <VideoDetails id={selectedVideo} />}
       </Suspense>
     </div>
   );
 };
 
 const VideoDisplay: React.FC<{
-  videosPromise: Promise<ApiResponse>;
+  videos: Video[];
   searchQuery: string;
   sortByView: boolean;
-}> = ({ videosPromise, searchQuery, sortByView }) => {
-  const apiResponse: ApiResponse = use(videosPromise);
-  let videos: Video[] = apiResponse.category ?? apiResponse.videos;
+  onVideoClick: (id: string) => void;
+  loading: boolean;
+}> = ({ videos, searchQuery, sortByView, onVideoClick, loading }) => {
+  if (loading) {
+    return (
+      <div className="mt-20 flex justify-center">
+        <MoonLoader />
+      </div>
+    );
+  }
+
+  let filteredVideos = videos;
 
   if (searchQuery) {
-    videos = videos.filter((video) =>
+    filteredVideos = filteredVideos.filter((video) =>
       video.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }
 
   if (sortByView) {
-    videos.sort((a, b) => {
-      const viewsA = parseInt(a.others.views.replace("K", "000"));
-      const viewsB = parseInt(b.others.views.replace("K", "000"));
-      return viewsB - viewsA;
+    filteredVideos.sort((a, b) => {
+      const parseViews = (views: string): number => {
+        if (views.includes("K")) {
+          return parseFloat(views.replace("K", "")) * 1_000;
+        } else if (views.includes("M")) {
+          return parseFloat(views.replace("M", "")) * 1_000_000;
+        }
+        return parseInt(views) || 0;
+      };
+      return parseViews(b.others.views) - parseViews(a.others.views);
     });
   }
 
-  return videos.length > 0 ? (
+  return filteredVideos.length > 0 ? (
     <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center items-start">
-      {videos.map((video) => (
+      {filteredVideos.map((video) => (
         <div
           className="flex flex-col gap-4 mb-8 cursor-pointer bg-white hover:shadow-md active:shadow-md rounded-lg overflow-hidden transition-transform transform hover:scale-105 active:scale-95 sm:active:scale-100"
           key={video.video_id}
-          onClick={() => console.log(video.video_id)}
+          onClick={() => onVideoClick(video.video_id)}
         >
           <img
             className="w-full h-52 object-cover"
