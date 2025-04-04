@@ -41,8 +41,8 @@ const Videos: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchVideos = async () => {
-      setLoading(true);
       let url = "https://openapi.programming-hero.com/api/phero-tube/videos";
       if (categoryId) {
         url = `https://openapi.programming-hero.com/api/phero-tube/category/${categoryId}`;
