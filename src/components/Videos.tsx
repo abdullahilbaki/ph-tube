@@ -119,7 +119,7 @@ const VideoDisplay: React.FC<{
     <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center items-start">
       {videos.map((video) => (
         <div
-          className="flex flex-col gap-4 mb-8 cursor-pointer bg-white hover:shadow-md rounded-lg overflow-hidden transition-transform transform hover:scale-105 active:scale-95 sm:active:scale-100"
+          className="flex flex-col gap-4 mb-8 cursor-pointer bg-white hover:shadow-md active:shadow-md rounded-lg overflow-hidden transition-transform transform hover:scale-105 active:scale-95 sm:active:scale-100"
           key={video.video_id}
           onClick={() => console.log(video.video_id)}
         >
