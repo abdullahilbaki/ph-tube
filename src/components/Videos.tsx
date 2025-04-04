@@ -75,9 +75,7 @@ const Videos: React.FC = () => {
   return (
     <div className="container mx-auto px-4 sm:px-0 py-6">
       <Navbar onSearch={handleSearch} onSortByView={handleSortByView} />
-      <GetCategoryBtns
-        onCategoryChange={handleCategoryChange}
-      />
+      <GetCategoryBtns onCategoryChange={handleCategoryChange} />
       <Suspense
         fallback={
           <div className="mt-20 flex justify-center">
@@ -120,34 +118,50 @@ const VideoDisplay: React.FC<{
   return videos.length > 0 ? (
     <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center items-start">
       {videos.map((video) => (
-        <div className="flex flex-col gap-3 mb-8" key={video.video_id}>
+        <div
+          className="flex flex-col gap-4 mb-8 cursor-pointer bg-white hover:shadow-md rounded-lg overflow-hidden transition-transform transform hover:scale-105 active:scale-95 sm:active:scale-100"
+          key={video.video_id}
+          onClick={() => console.log(video.video_id)}
+        >
           <img
-            className="w-full h-48 object-cover rounded-md"
+            className="w-full h-52 object-cover"
             src={video.thumbnail}
             alt={video.title}
           />
-          <div className="flex gap-3 items-start">
+
+          <div className="p-4 flex gap-4">
             {video.authors.length > 0 && (
               <img
-                className="w-10 h-10 object-cover rounded-full"
+                className="w-12 h-12 object-cover rounded-full border border-gray-200"
                 src={video.authors[0].profile_picture}
                 alt={video.authors[0].profile_name}
               />
             )}
-            <div className="flex flex-col gap-1">
-              <h2 className="text-lg font-semibold">{video.title}</h2>
-              <div className="flex gap-2 items-center">
+
+            <div className="flex flex-col gap-2 flex-1">
+              <h2 className="text-lg font-bold text-gray-900">{video.title}</h2>
+
+              <div className="flex items-center gap-2 text-gray-600 text-sm">
                 {video.authors.length > 0 && (
-                  <p className="text-gray-500">
-                    {video.authors[0].profile_name}
-                  </p>
-                )}
-                {video.authors[0].verified && (
-                  <img src={verifiedIcon} alt="Verified" />
+                  <>
+                    <p className="font-medium">
+                      {video.authors[0].profile_name}
+                    </p>
+                    {video.authors[0].verified && (
+                      <img
+                        className="w-4 h-4"
+                        src={verifiedIcon}
+                        alt="Verified"
+                      />
+                    )}
+                  </>
                 )}
               </div>
+
               {video.others.views && (
-                <p className="text-gray-500">{video.others.views}</p>
+                <p className="text-gray-500 text-sm">
+                  {video.others.views} views
+                </p>
               )}
             </div>
           </div>
