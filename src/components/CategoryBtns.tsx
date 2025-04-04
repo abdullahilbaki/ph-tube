@@ -1,37 +1,25 @@
 // CategoryBtns.tsx
 
-import React, { Suspense, use, useState, useEffect } from "react";
+import React, { Suspense, use, useState } from "react";
 import { BeatLoader, PropagateLoader } from "react-spinners";
 
 interface ButtonProps {
   btnText: string;
   isClicked: boolean;
   onClick: () => void;
-  isSearchActive: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({
-  btnText,
-  isClicked,
-  onClick,
-  isSearchActive,
-}) => {
+const Button: React.FC<ButtonProps> = ({ btnText, isClicked, onClick }) => {
   const buttonClassName = isClicked
-    ? isSearchActive
-      ? "bg-gray-300"
-      : "bg-red-500 text-white hover:bg-red-600"
+    ? "bg-red-500 text-white hover:bg-red-600"
     : "bg-gray-300";
+
   return (
     <button
       onClick={onClick}
       className={`px-4 p-1 font-medium rounded-sm 
-        outline-none ${buttonClassName} ${
-        isSearchActive
-          ? "cursor-not-allowed"
-          : `hover:bg-gray-200 cursor-pointer transition-all duration-200 
-          ease-in-out transform hover:scale-105 active:scale-95`
-      }`}
-      disabled={isSearchActive}
+        outline-none ${buttonClassName} hover:bg-gray-200 cursor-pointer transition-all duration-200 
+          ease-in-out transform hover:scale-105 active:scale-95`}
     >
       {btnText}
     </button>
@@ -50,24 +38,15 @@ interface ApiResponse {
 interface ShowCategoryBtnsProps {
   buttonPromise: Promise<ApiResponse>;
   onCategoryChange: (categoryId: string | null) => void;
-  isSearchActive: boolean;
 }
 
 const ShowCategoryBtns: React.FC<ShowCategoryBtnsProps> = ({
   buttonPromise,
   onCategoryChange,
-  isSearchActive,
 }) => {
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const apiResponse: ApiResponse = use(buttonPromise);
   const categoryBtns: Category[] = apiResponse.categories;
-
-  useEffect(() => {
-    if (isSearchActive) {
-      setActiveCategoryId(null);
-      onCategoryChange(null);
-    }
-  }, [isSearchActive, onCategoryChange]);
 
   if (!categoryBtns) {
     return (
@@ -91,7 +70,6 @@ const ShowCategoryBtns: React.FC<ShowCategoryBtnsProps> = ({
         btnText="All"
         isClicked={activeCategoryId === null}
         onClick={() => handleCategoryClick(null)}
-        isSearchActive={isSearchActive}
       />
       {categoryBtns.map((category) => (
         <Button
@@ -99,7 +77,6 @@ const ShowCategoryBtns: React.FC<ShowCategoryBtnsProps> = ({
           btnText={category.category}
           isClicked={activeCategoryId === category.category_id}
           onClick={() => handleCategoryClick(category.category_id)}
-          isSearchActive={isSearchActive}
         />
       ))}
     </div>
@@ -112,8 +89,7 @@ const buttonPromise: Promise<ApiResponse> = fetch(
 
 const GetCategoryBtns: React.FC<{
   onCategoryChange: (categoryId: string | null) => void;
-  isSearchActive: boolean;
-}> = ({ onCategoryChange, isSearchActive }) => {
+}> = ({ onCategoryChange }) => {
   return (
     <Suspense
       fallback={
@@ -125,7 +101,6 @@ const GetCategoryBtns: React.FC<{
       <ShowCategoryBtns
         buttonPromise={buttonPromise}
         onCategoryChange={onCategoryChange}
-        isSearchActive={isSearchActive}
       />
     </Suspense>
   );

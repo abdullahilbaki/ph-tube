@@ -40,7 +40,6 @@ const Videos: React.FC = () => {
       (res) => res.json()
     )
   );
-  const [isSearchActive, setIsSearchActive] = useState(false);
   const [sortByView, setSortByView] = useState(false);
 
   useEffect(() => {
@@ -51,11 +50,11 @@ const Videos: React.FC = () => {
       }
       if (searchQuery) {
         const queryParam = `?title=${searchQuery}`;
-        url += categoryId ? `&${queryParam.slice(1)}` : queryParam;
+        url += queryParam;
       }
+      console.log(url);
       const promise = fetch(url).then((res) => res.json());
       setVideosPromise(promise);
-      setIsSearchActive(searchQuery !== "");
     };
 
     fetchVideos();
@@ -78,7 +77,6 @@ const Videos: React.FC = () => {
       <Navbar onSearch={handleSearch} onSortByView={handleSortByView} />
       <GetCategoryBtns
         onCategoryChange={handleCategoryChange}
-        isSearchActive={isSearchActive}
       />
       <Suspense
         fallback={
